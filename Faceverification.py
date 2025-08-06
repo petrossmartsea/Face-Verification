@@ -9,25 +9,27 @@ def is_valid_face(img_path):
         # Detect faces
         faces = DeepFace.extract_faces(img_path=img_path, enforce_detection=True)
 
+        #reject if faces are more than 1
         if len(faces) != 1:
-            print(f" Rejected: {img_path} contains {len(faces)} faces.")
+            print(f" Rejected: {img_path} contains {len(faces)} faces.") 
             return False, "Multiple or no faces detected."
 
         return True, " Valid face"
 
-    except Exception as e:
+    except Exception as e: # Throw exception if face was not found
         print(f" Rejected: {img_path} probably contains an anime or invalid face.")
         return False, "Anime or no recognizable face"
 
 def verify_faces(img1, img2):
     try:
+        # Verify if its the same person in the two pics
         result = DeepFace.verify(
             img1_path=img1,
             img2_path=img2,
             model_name="ArcFace",
             enforce_detection=True
         )
-
+        # Results
         verified = result["verified"]
         distance = result["distance"]
 
@@ -45,11 +47,11 @@ def verify_faces(img1, img2):
         print(" Rejected during verification. Probably invalid or anime face.")
         return "reject", None
 
-# Step 1: Validate both images
+# Validate both images
 img1_valid, _ = is_valid_face(img1_path)
 img2_valid, _ = is_valid_face(img2_path)
 
-# Step 2: Proceed only if both are valid
+# Proceed only if both are valid
 if img1_valid and img2_valid:
     status, distance = verify_faces(img1_path, img2_path)
     if status == "review":
