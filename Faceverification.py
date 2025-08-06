@@ -1,8 +1,8 @@
 from deepface import DeepFace
 
 # Image paths
-img1_path = "images/real1.jpg"
-img2_path = "images/real2.jpg"
+img1_path = "images/test.jpg"
+img2_path = "images/test_image.jpg"
 
 def is_valid_face(img_path):
     try:
@@ -21,21 +21,26 @@ def is_valid_face(img_path):
         return False, "Anime or no recognizable face"
 
 def verify_faces(img1, img2):
-    try:
-        # Verify if its the same person in the two pics
-        result = DeepFace.verify(
-            img1_path=img1,
-            img2_path=img2,
-            model_name="ArcFace",
-            enforce_detection=True
-        )
-        # Results
-        verified = result["verified"]
-        distance = result["distance"]
+    models = ["ArcFace", "Facenet"]
+    distances = {}
 
-        print("\n Verification result:")
-        print(f"Match: {verified}")
-        print(f"Distance: {distance:.3f}")
+    try:
+        for model in models:
+        # Verify if its the same person in the two pics
+            result = DeepFace.verify(
+                img1_path=img1,
+                img2_path=img2,
+                model_name=model,
+                enforce_detection=True
+            )
+            # Results
+            verified = result["verified"]
+            distance = result["distance"]
+
+            print("\n Verification result:")
+            print(f"{model} : ")
+            print(f"Match: {verified}")
+            print(f"Distance: {distance:.3f}")
 
         if distance > 0.4:
             print(" Flagged: Distance is too high. Needs human review.")
